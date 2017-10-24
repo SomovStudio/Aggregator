@@ -561,6 +561,7 @@ namespace Aggregator.Client
 			this.ввестиКлючПрограммыToolStripMenuItem.Name = "ввестиКлючПрограммыToolStripMenuItem";
 			this.ввестиКлючПрограммыToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.ввестиКлючПрограммыToolStripMenuItem.Text = "Ввести ключь программы";
+			this.ввестиКлючПрограммыToolStripMenuItem.Visible = false;
 			this.ввестиКлючПрограммыToolStripMenuItem.Click += new System.EventHandler(this.ВвестиКлючПрограммыToolStripMenuItemClick);
 			// 
 			// помощьToolStripMenuItem

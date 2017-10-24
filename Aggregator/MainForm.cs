@@ -37,9 +37,12 @@ namespace Aggregator
 		}
 		void MainFormLoad(object sender, EventArgs e)
 		{
+			/*
 			CheckTrial checkTrial = new CheckTrial();
 			if(checkTrial.Check()) timer1.Start();
 			else Application.Exit();
+			*/
+			timer1.Start();
 		}
 		void Timer1Tick(object sender, EventArgs e)
 		{
