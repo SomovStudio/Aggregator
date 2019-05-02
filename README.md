@@ -1,9 +1,10 @@
-# Aggregator-Windows
+# Aggregator
 Программное решение "Агрегатор" поможет вам в работе над большим количеством прайс-листов с дальнейшим составлением плана закупок, формированием и отправкой заказов поставщикам.
 
 <br>
-Скачать архив: https://github.com/SomovStudio/Aggregator/archive/1.0.zip
-
+Скачать архив: https://somovstudio.github.io/download/aggregator/Aggregator.zip
+<br>
+Установщик: https://somovstudio.github.io/download/aggregator/Setup.zip
 <hr>
 
 <p align="center">
