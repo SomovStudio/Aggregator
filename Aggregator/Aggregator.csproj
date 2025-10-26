@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <PropertyGroup>
     <ProjectGuid>{C3EDE251-B5F5-42DC-B677-BC184D9B6709}</ProjectGuid>
     <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>Aggregator</RootNamespace>
     <AssemblyName>Aggregator 1.0</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <NoWin32Manifest>False</NoWin32Manifest>
     <ApplicationIcon>img\icons_logo\iconAll.ico</ApplicationIcon>
@@ -21,6 +21,7 @@
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -46,6 +47,12 @@
     <DefineConstants>TRACE</DefineConstants>
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Excel">
       <HintPath>..\packages\ExcelDataReader.2.1.2.3\lib\net20\Excel.dll</HintPath>
@@ -66,116 +73,172 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Admin\FormConsoleQuery.cs" />
+    <Compile Include="Admin\FormConsoleQuery.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Admin\FormConsoleQuery.Designer.cs">
       <DependentUpon>FormConsoleQuery.cs</DependentUpon>
     </Compile>
-    <Compile Include="Admin\FormCreateAccessDB.cs" />
+    <Compile Include="Admin\FormCreateAccessDB.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Admin\FormCreateAccessDB.Designer.cs">
       <DependentUpon>FormCreateAccessDB.cs</DependentUpon>
     </Compile>
-    <Compile Include="Admin\FormCreateMSSQLDB.cs" />
+    <Compile Include="Admin\FormCreateMSSQLDB.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Admin\FormCreateMSSQLDB.Designer.cs">
       <DependentUpon>FormCreateMSSQLDB.cs</DependentUpon>
     </Compile>
-    <Compile Include="Admin\FormDatabase.cs" />
+    <Compile Include="Admin\FormDatabase.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Admin\FormDatabase.Designer.cs">
       <DependentUpon>FormDatabase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Directories\Constants\FormConstants.cs" />
+    <Compile Include="Client\Directories\Constants\FormConstants.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Directories\Constants\FormConstants.Designer.cs">
       <DependentUpon>FormConstants.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Directories\Counteragents\FormCounteragentFile.cs" />
+    <Compile Include="Client\Directories\Counteragents\FormCounteragentFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Directories\Counteragents\FormCounteragentFile.Designer.cs">
       <DependentUpon>FormCounteragentFile.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Directories\Counteragents\FormCounteragentFolder.cs" />
+    <Compile Include="Client\Directories\Counteragents\FormCounteragentFolder.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Directories\Counteragents\FormCounteragentFolder.Designer.cs">
       <DependentUpon>FormCounteragentFolder.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Directories\Counteragents\FormCounteragentPrice.cs" />
+    <Compile Include="Client\Directories\Counteragents\FormCounteragentPrice.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Directories\Counteragents\FormCounteragentPrice.Designer.cs">
       <DependentUpon>FormCounteragentPrice.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Directories\Counteragents\FormCounteragents.cs" />
+    <Compile Include="Client\Directories\Counteragents\FormCounteragents.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Directories\Counteragents\FormCounteragents.Designer.cs">
       <DependentUpon>FormCounteragents.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Directories\Nomenclature\FormNomenclature.cs" />
+    <Compile Include="Client\Directories\Nomenclature\FormNomenclature.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Directories\Nomenclature\FormNomenclature.Designer.cs">
       <DependentUpon>FormNomenclature.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Directories\Nomenclature\FormNomenclatureFile.cs" />
+    <Compile Include="Client\Directories\Nomenclature\FormNomenclatureFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Directories\Nomenclature\FormNomenclatureFile.Designer.cs">
       <DependentUpon>FormNomenclatureFile.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Directories\Nomenclature\FormNomenclatureFolder.cs" />
+    <Compile Include="Client\Directories\Nomenclature\FormNomenclatureFolder.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Directories\Nomenclature\FormNomenclatureFolder.Designer.cs">
       <DependentUpon>FormNomenclatureFolder.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Directories\Nomenclature\FormNomenclatureLoadExcel.cs" />
+    <Compile Include="Client\Directories\Nomenclature\FormNomenclatureLoadExcel.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Directories\Nomenclature\FormNomenclatureLoadExcel.Designer.cs">
       <DependentUpon>FormNomenclatureLoadExcel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Directories\Nomenclature\FormNomenclatureLoadPrice.cs" />
+    <Compile Include="Client\Directories\Nomenclature\FormNomenclatureLoadPrice.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Directories\Nomenclature\FormNomenclatureLoadPrice.Designer.cs">
       <DependentUpon>FormNomenclatureLoadPrice.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Directories\Units\FormUnits.cs" />
+    <Compile Include="Client\Directories\Units\FormUnits.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Directories\Units\FormUnits.Designer.cs">
       <DependentUpon>FormUnits.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Directories\Units\FormUnitsFile.cs" />
+    <Compile Include="Client\Directories\Units\FormUnitsFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Directories\Units\FormUnitsFile.Designer.cs">
       <DependentUpon>FormUnitsFile.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Documents\FormFullJournal.cs" />
+    <Compile Include="Client\Documents\FormFullJournal.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Documents\FormFullJournal.Designer.cs">
       <DependentUpon>FormFullJournal.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Documents\Order\FormOrderDoc.cs" />
+    <Compile Include="Client\Documents\Order\FormOrderDoc.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Documents\Order\FormOrderDoc.Designer.cs">
       <DependentUpon>FormOrderDoc.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Documents\Order\FormOrderJournal.cs" />
+    <Compile Include="Client\Documents\Order\FormOrderJournal.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Documents\Order\FormOrderJournal.Designer.cs">
       <DependentUpon>FormOrderJournal.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Documents\Order\FormOrderNomenclature.cs" />
+    <Compile Include="Client\Documents\Order\FormOrderNomenclature.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Documents\Order\FormOrderNomenclature.Designer.cs">
       <DependentUpon>FormOrderNomenclature.cs</DependentUpon>
     </Compile>
     <Compile Include="Client\Documents\Order\InputToOrder.cs" />
-    <Compile Include="Client\Documents\PurchasePlan\FormPurchasePlanDoc.cs" />
+    <Compile Include="Client\Documents\PurchasePlan\FormPurchasePlanDoc.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Documents\PurchasePlan\FormPurchasePlanDoc.Designer.cs">
       <DependentUpon>FormPurchasePlanDoc.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Documents\PurchasePlan\FormPurchasePlanJournal.cs" />
+    <Compile Include="Client\Documents\PurchasePlan\FormPurchasePlanJournal.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Documents\PurchasePlan\FormPurchasePlanJournal.Designer.cs">
       <DependentUpon>FormPurchasePlanJournal.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Documents\PurchasePlan\FormPurchasePlanNomenclature.cs" />
+    <Compile Include="Client\Documents\PurchasePlan\FormPurchasePlanNomenclature.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Documents\PurchasePlan\FormPurchasePlanNomenclature.Designer.cs">
       <DependentUpon>FormPurchasePlanNomenclature.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\FormAbout.cs" />
+    <Compile Include="Client\FormAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\FormAbout.Designer.cs">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\FormClient.cs" />
+    <Compile Include="Client\FormClient.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\FormClient.Designer.cs">
       <DependentUpon>FormClient.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\OpenFiles\FormOpenExcel.cs" />
+    <Compile Include="Client\OpenFiles\FormOpenExcel.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\OpenFiles\FormOpenExcel.Designer.cs">
       <DependentUpon>FormOpenExcel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Reports\FormReportCountragents.cs" />
+    <Compile Include="Client\Reports\FormReportCountragents.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Reports\FormReportCountragents.Designer.cs">
       <DependentUpon>FormReportCountragents.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client\Settings\FormSettings.cs" />
+    <Compile Include="Client\Settings\FormSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Client\Settings\FormSettings.Designer.cs">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </Compile>
@@ -200,41 +263,57 @@
     <Compile Include="Data\DataConstants.cs" />
     <Compile Include="Data\DataForms.cs" />
     <Compile Include="Data\DataStruct.cs" />
-    <Compile Include="MainForm.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Trial\CheckTrial.cs" />
-    <Compile Include="Trial\FormTrial.cs" />
+    <Compile Include="Trial\FormTrial.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Trial\FormTrial.Designer.cs">
       <DependentUpon>FormTrial.cs</DependentUpon>
     </Compile>
-    <Compile Include="User\FormCheckUser.cs" />
+    <Compile Include="User\FormCheckUser.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="User\FormCheckUser.Designer.cs">
       <DependentUpon>FormCheckUser.cs</DependentUpon>
     </Compile>
-    <Compile Include="User\FormUsers.cs" />
+    <Compile Include="User\FormUsers.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="User\FormUsers.Designer.cs">
       <DependentUpon>FormUsers.cs</DependentUpon>
     </Compile>
-    <Compile Include="User\FormUsersEdit.cs" />
+    <Compile Include="User\FormUsersEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="User\FormUsersEdit.Designer.cs">
       <DependentUpon>FormUsersEdit.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utilits\Calculator.cs" />
+    <Compile Include="Utilits\Calculator.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Utilits\Calculator.Designer.cs">
       <DependentUpon>Calculator.cs</DependentUpon>
     </Compile>
     <Compile Include="Utilits\Console.cs" />
     <Compile Include="Utilits\Conversion.cs" />
     <Compile Include="Utilits\ExportExcel.cs" />
-    <Compile Include="Utilits\CalculationCostRealization.cs" />
+    <Compile Include="Utilits\CalculationCostRealization.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Utilits\CalculationCostRealization.Designer.cs">
       <DependentUpon>CalculationCostRealization.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utilits\NotificationSearchNomenclature.cs" />
+    <Compile Include="Utilits\NotificationSearchNomenclature.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Utilits\NotificationSearchNomenclature.Designer.cs">
       <DependentUpon>NotificationSearchNomenclature.cs</DependentUpon>
     </Compile>
@@ -350,31 +429,9 @@
       <DependentUpon>NotificationSearchNomenclature.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Client\Directories" />
-    <Folder Include="Client\Directories\Constants" />
-    <Folder Include="Client\Directories\Counteragents" />
-    <Folder Include="Client\Directories\Nomenclature" />
-    <Folder Include="Client\Documents\PurchasePlan" />
-    <Folder Include="Client\Documents\Order" />
-    <Folder Include="Client\OpenFiles" />
-    <Folder Include="Client\Settings" />
-    <Folder Include="Client\Directories\Units" />
-    <Folder Include="Client\Documents" />
-    <Folder Include="Client\Reports" />
-    <Folder Include="Data" />
-    <Folder Include="Client" />
-    <Folder Include="Database" />
-    <Folder Include="Admin" />
-    <Folder Include="Database\Config" />
-    <Folder Include="Database\Local" />
-    <Folder Include="Database\Server" />
-    <Folder Include="Database\Constants" />
-    <Folder Include="Utilits" />
-    <Folder Include="User" />
-    <Folder Include="Trial" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
