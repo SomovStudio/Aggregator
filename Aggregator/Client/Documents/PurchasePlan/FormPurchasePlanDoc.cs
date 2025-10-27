@@ -1299,9 +1299,14 @@ namespace Aggregator.Client.Documents.PurchasePlan
 			if(listViewPrices.Items.Count == 0){
 				MessageBox.Show("Вы не добавили не одного прайса.", "Сообщение");
 				return;
-			}			
-			
-			/*
+			}
+            if (filterPriceComboBox.Text == "")
+            {
+                MessageBox.Show("Вы не выбрати тип подбора товара по цене (мин/макс).", "Сообщение");
+                return;
+            }
+
+            /*
 			if(DataConfig.typeConnection == DataConstants.CONNETION_LOCAL) {
 				// OLEDB
 				searchNomenclatureOleDb = new SearchNomenclatureOleDb();
@@ -1314,9 +1319,10 @@ namespace Aggregator.Client.Documents.PurchasePlan
 				searchNomenclatureSql.autoFindNomenclature(listViewNomenclature);
 			}
 			*/
-			NotificationSearchNomenclature searchNomenclature = new NotificationSearchNomenclature();
+            NotificationSearchNomenclature searchNomenclature = new NotificationSearchNomenclature();
 			searchNomenclature.ListViewPrices = listViewPrices;
 			searchNomenclature.ListViewNomenclature = listViewNomenclature;
+			searchNomenclature.FilterPrice = filterPriceComboBox.Text;
 			searchNomenclature.ShowDialog();
 			
 		}

@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration ("")]
 [assembly: AssemblyCompany ("Somov Studio")]
 [assembly: AssemblyProduct ("Aggregator")]
-[assembly: AssemblyCopyright ("Copyright 2017 Somov Studio")]
+[assembly: AssemblyCopyright ("Copyright 2017-2025 Somov Studio")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 // This sets the default COM visibility of types in the assembly to invisible.
@@ -24,4 +24,4 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can use the default the Revision and 
 // Build Numbers by using the '*' as shown below:
-[assembly: AssemblyVersion ("1.0.*")]
+[assembly: AssemblyVersion ("1.0.0.1")]

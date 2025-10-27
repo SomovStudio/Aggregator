@@ -33,9 +33,10 @@ namespace Aggregator.Utilits
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
 		}
-		
+
 		public ListView ListViewPrices;
 		public ListView ListViewNomenclature;
+		public string FilterPrice;
 		SearchNomenclatureOleDb searchNomenclatureOleDb;
 		SearchNomenclatureSqlServer searchNomenclatureSql;
 		
@@ -45,7 +46,7 @@ namespace Aggregator.Utilits
 				// OLEDB
 				searchNomenclatureOleDb = new SearchNomenclatureOleDb();
 				searchNomenclatureOleDb.setPrices(ListViewPrices);
-				searchNomenclatureOleDb.autoFindNomenclature(ListViewNomenclature, this);
+				searchNomenclatureOleDb.autoFindNomenclature(ListViewNomenclature, FilterPrice, this);
 			} else if (DataConfig.typeConnection == DataConstants.CONNETION_SERVER){
 				// MSSQL SERVER
 				searchNomenclatureSql = new SearchNomenclatureSqlServer();

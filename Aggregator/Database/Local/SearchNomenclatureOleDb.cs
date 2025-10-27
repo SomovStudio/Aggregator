@@ -23,7 +23,10 @@ namespace Aggregator.Database.Local
 	
 	public class SearchNomenclatureOleDb
 	{
-		List<Price> priceList;
+        public const string MIN_PRICE = "По минимальным ценам";
+        public const string MAX_PRICE = "По максимальным ценам";
+
+        List<Price> priceList;
 		List<Nomenclature> nomenclatureList;
 		
 		OleDbConnection oleDbConnection;
@@ -181,7 +184,7 @@ namespace Aggregator.Database.Local
 		}
 		
 		/* AUTOMATION ======================================================================= */
-		public void autoFindNomenclature(ListView sourceListView, NotificationSearchNomenclature notification)
+		public void autoFindNomenclature(ListView sourceListView, string filterPrice,  NotificationSearchNomenclature notification)
 		{
 			String criteriasSearch;
 			String nomenclatureID;
@@ -189,19 +192,66 @@ namespace Aggregator.Database.Local
 			bool result = false;
 			DateTime dt;
 			String value;
+			Double lastPrice = 0;
 			
 			for(int i = 0; i < count; i++) {
 				// получаем сформированный запрос по критериям выбранной номенклатуры
 				nomenclatureID = sourceListView.Items[i].SubItems[1].Text;
 				criteriasSearch = getAutoCriteriasSearch(nomenclatureID);
-				
-				// обработка прайс листов по выбранной номенклатуре
-				foreach(Price price in priceList){
-					oleDbConnection.Open();
+
+                lastPrice = 0;
+
+                // обработка прайс листов по выбранной номенклатуре
+                foreach (Price price in priceList){
+                    ////////////////Utilits.Console.Log("SELECT * FROM " + price.priceName + " " + criteriasSearch);
+
+                    oleDbConnection.Open();
 					oleDbCommand = new OleDbCommand("SELECT * FROM " + price.priceName + " " + criteriasSearch, oleDbConnection);
 					oleDbDataReader = oleDbCommand.ExecuteReader();
-					result = oleDbDataReader.Read();
-			        
+
+					while (oleDbDataReader.Read())
+					{
+
+                        if (filterPrice == MIN_PRICE && lastPrice > 0 && lastPrice < Conversion.StringToDouble(oleDbDataReader["price"].ToString()))
+						{
+							continue;
+						}
+						else if (filterPrice == MAX_PRICE && lastPrice > 0 && lastPrice > Conversion.StringToDouble(oleDbDataReader["price"].ToString()))
+						{
+                            continue;
+                        }
+						else
+						{
+                            Utilits.Console.Log("+ Наименование: " + oleDbDataReader["name"].ToString() + " | Цена: " + oleDbDataReader["price"].ToString());
+                            sourceListView.Items[i].StateImageIndex = 1;
+                            sourceListView.Items[i].SubItems[6].Text = oleDbDataReader["name"].ToString();
+                            value = Conversion.StringToMoney(Conversion.StringToDouble(oleDbDataReader["price"].ToString()).ToString());
+                            sourceListView.Items[i].SubItems[7].Text = value;
+                            sourceListView.Items[i].SubItems[8].Text = oleDbDataReader["manufacturer"].ToString();
+                            sourceListView.Items[i].SubItems[9].Text = oleDbDataReader["remainder"].ToString();
+                            dt = new DateTime();
+                            DateTime.TryParse(oleDbDataReader["term"].ToString(), out dt);
+                            sourceListView.Items[i].SubItems[10].Text = dt.ToString("dd.MM.yyyy");
+                            value = Conversion.StringToMoney(Conversion.StringToDouble(oleDbDataReader["discount1"].ToString()).ToString());
+                            sourceListView.Items[i].SubItems[11].Text = value;
+                            value = Conversion.StringToMoney(Conversion.StringToDouble(oleDbDataReader["discount2"].ToString()).ToString());
+                            sourceListView.Items[i].SubItems[12].Text = value;
+                            value = Conversion.StringToMoney(Conversion.StringToDouble(oleDbDataReader["discount3"].ToString()).ToString());
+                            sourceListView.Items[i].SubItems[13].Text = value;
+                            value = Conversion.StringToMoney(Conversion.StringToDouble(oleDbDataReader["discount4"].ToString()).ToString());
+                            sourceListView.Items[i].SubItems[14].Text = value;
+                            sourceListView.Items[i].SubItems[15].Text = oleDbDataReader["code"].ToString();
+                            sourceListView.Items[i].SubItems[16].Text = oleDbDataReader["series"].ToString();
+                            sourceListView.Items[i].SubItems[17].Text = oleDbDataReader["article"].ToString();
+                            sourceListView.Items[i].SubItems[18].Text = price.counteragentName;
+                            sourceListView.Items[i].SubItems[19].Text = price.priceName;
+                            sourceListView.Items[i].SubItems[20].Text = "";
+                            lastPrice = Conversion.StringToDouble(oleDbDataReader["price"].ToString());
+                        }
+                    }
+					
+					/*
+                    result = oleDbDataReader.Read();
 					if(result){
 						sourceListView.Items[i].StateImageIndex = 1;
 						sourceListView.Items[i].SubItems[6].Text = oleDbDataReader["name"].ToString();
@@ -227,6 +277,7 @@ namespace Aggregator.Database.Local
 			        	sourceListView.Items[i].SubItems[19].Text = price.priceName;
 			        	sourceListView.Items[i].SubItems[20].Text = "";
 					}
+					*/
 			        oleDbDataReader.Close();
 			        oleDbConnection.Close();
 				}
