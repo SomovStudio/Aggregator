@@ -79,3 +79,24 @@ WHERE
 ORDER BY
     IIF(LCASE([nomenclatureName]) LIKE "%dell%", 1, 0) +
     IIF(LCASE([nomenclatureName]) LIKE "%ноутбук%", 1, 0) DESC
+
+----------------------------------------------------------
+
+SELECT * ,
+IIF(LCASE([name]) LIKE '%notebook%' 1 0) +
+IIF(LCASE([name]) LIKE '%ноутбук%' 1 0) +
+IIF(LCASE([name]) LIKE '%asus%' 1 0) +
+IIF(LCASE([name]) LIKE '%expertbook%' 1 0) +
+IIF(LCASE([name]) LIKE '%b1%' 1 0) AS relevance
+FROM Price27102025090101
+WHERE
+LCASE([name]) LIKE '%notebook%' OR
+LCASE([name]) LIKE '%ноутбук%' OR
+LCASE([name]) LIKE '%asus%' OR
+LCASE([name]) LIKE '%expertbook%' OR
+LCASE([name]) LIKE '%b1%'ORDER BY
+IIF(LCASE([name]) LIKE '%notebook%' 1 0) +
+IIF(LCASE([name]) LIKE '%ноутбук%' 1 0) +
+IIF(LCASE([name]) LIKE '%asus%' 1 0) +
+IIF(LCASE([name]) LIKE '%expertbook%' 1 0) +
+IIF(LCASE([name]) LIKE '%b1%' 1 0) DESC

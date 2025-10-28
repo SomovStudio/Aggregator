@@ -111,7 +111,7 @@ namespace Aggregator.Client
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(260, 19);
             this.label6.TabIndex = 6;
-            this.label6.Text = "Версия: 1.0.0.2";
+            this.label6.Text = "Версия: 1.0.0.3";
             // 
             // label7
             // 
@@ -119,7 +119,7 @@ namespace Aggregator.Client
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(260, 19);
             this.label7.TabIndex = 7;
-            this.label7.Text = "Дата: 27.10.2025";
+            this.label7.Text = "Дата: 28.10.2025";
             // 
             // label8
             // 

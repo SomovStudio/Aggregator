@@ -56,14 +56,15 @@ namespace Aggregator.Database.Server
 		public List<Nomenclature> getFindNomenclature(String nomenclatureID)
 		{
 			nomenclatureList = new List<Nomenclature>();
-			
-			String criteriasSearch = getCriteriasSearch(nomenclatureID);
-			
-			sqlConnection.Open();
+
+            String query = "";
+
 			foreach(Price price in priceList){
-				sqlCommand = new SqlCommand("SELECT * FROM " + price.priceName + " " + criteriasSearch, sqlConnection);
-				
-				sqlDataReader = sqlCommand.ExecuteReader();
+                query = getQuery(nomenclatureID, price.priceName);
+
+                sqlConnection.Open();
+                sqlCommand = new SqlCommand(query, sqlConnection);
+                sqlDataReader = sqlCommand.ExecuteReader();
 				Nomenclature nomenclature;
 		        while (sqlDataReader.Read())
 		        {
@@ -83,17 +84,72 @@ namespace Aggregator.Database.Server
 		        	nomenclature.Term = (DateTime)sqlDataReader["term"];
 		        	nomenclature.CounteragentName = price.counteragentName;
 		        	nomenclature.CounteragentPrice = price.priceName;
-		        	nomenclatureList.Add(nomenclature);
+					nomenclature.Relevance = sqlDataReader["relevance"].ToString();
+                    nomenclatureList.Add(nomenclature);
 		        }
 		        sqlDataReader.Close();
-			}
+                sqlConnection.Close();
+            }
 
-			sqlConnection.Close();
-			
-			return nomenclatureList;
+            nomenclatureList.Sort((p1, p2) => p2.Relevance.CompareTo(p1.Relevance));
+
+            return nomenclatureList;
 		}
-		
-		String getCriteriasSearch(String nomenclatureID)
+
+        String getQuery(String nomenclatureID, String pricename)
+		{
+            /* Входные данные */
+            sqlConnection.Open();
+            Nomenclature templeteNomenclature;
+            sqlCommand = new SqlCommand("SELECT * FROM Nomenclature WHERE (id = " + nomenclatureID + ")", sqlConnection);
+            sqlDataReader = sqlCommand.ExecuteReader();
+            sqlDataReader.Read();
+            templeteNomenclature.Name = sqlDataReader["name"].ToString();
+            templeteNomenclature.Code = sqlDataReader["code"].ToString();
+            templeteNomenclature.Series = sqlDataReader["series"].ToString();
+            templeteNomenclature.Article = sqlDataReader["article"].ToString();
+            templeteNomenclature.Manufacturer = sqlDataReader["manufacturer"].ToString();
+            templeteNomenclature.Price = (Double)sqlDataReader["price"];
+            templeteNomenclature.Units = sqlDataReader["units"].ToString();
+            sqlDataReader.Close();
+            sqlConnection.Close();
+
+            // По Наименованию
+            int count = 0;
+            String str = "SELECT *," + Environment.NewLine;
+
+            String[] words = templeteNomenclature.Name.Split();
+            count = words.Length;
+            if (count > 0)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    if (words[i].ToString() == "" || words[i].ToString() == " ") continue;
+                    str += "IIF(LOWER([name]) LIKE '%" + words[i].ToLower() + "%', 1, 0)";
+                    if ((i + 1) < count) str += " +" + Environment.NewLine;
+                }
+                str += " AS relevance" + Environment.NewLine;
+                str += "FROM " + pricename + Environment.NewLine;
+                str += "WHERE" + Environment.NewLine;
+                for (int j = 0; j < count; j++)
+                {
+                    if (words[j].ToString() == "" || words[j].ToString() == " ") continue;
+                    str += "LOWER([name]) LIKE '%" + words[j].ToLower() + "%'";
+                    if ((j + 1) < count) str += " OR" + Environment.NewLine;
+                }
+                str += "ORDER BY" + Environment.NewLine;
+                for (int k = 0; k < count; k++)
+                {
+                    if (words[k].ToString() == "" || words[k].ToString() == " ") continue;
+                    str += "IIF(LOWER([name]) LIKE '%" + words[k].ToLower() + "%', 1, 0)";
+                    if ((k + 1) < count) str += " +" + Environment.NewLine;
+                }
+                str += " DESC";
+            }
+            return str;
+        }
+
+        String getCriteriasSearch(String nomenclatureID)
 		{
 			/* Входные данные */
 			sqlConnection.Open();
