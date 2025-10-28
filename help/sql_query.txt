@@ -1,0 +1,81 @@
+ВОПРОС:
+Есть наименование товара "Notebook ноутбук Dell Делл A10" и нужно с помощью SQL найти в базе данные все товары которые похожи по этому названию
+А как учесть наибольшее совпание по названию ?
+Как это реализовать в Microsoft Access ?
+
+ОТВЕТ:
+Для учета наибольшего совпадения по названию нужно использовать подход с подсчетом релевантности и ранжированием результатов.
+
+----------------------------------------------------------
+
+1. Базовый поиск с подсчетом совпадений
+
+SELECT *,
+       IIF(LCase([name]) LIKE "*notebook*", 1, 0) +
+       IIF(LCase([name]) LIKE "*ноутбук*", 1, 0) +
+       IIF(LCase([name]) LIKE "*dell*", 1, 0) +
+       IIF(LCase([name]) LIKE "*делл*", 1, 0) +
+       IIF(LCase([name]) LIKE "*a10*", 1, 0) AS match_count
+FROM products
+WHERE LCase([name]) LIKE "*notebook*" 
+   OR LCase([name]) LIKE "*ноутбук*"
+   OR LCase([name]) LIKE "*dell*"
+   OR LCase([name]) LIKE "*делл*"
+   OR LCase([name]) LIKE "*a10*"
+ORDER BY 
+       IIF(LCase([name]) LIKE "*notebook*", 1, 0) +
+       IIF(LCase([name]) LIKE "*ноутбук*", 1, 0) +
+       IIF(LCase([name]) LIKE "*dell*", 1, 0) +
+       IIF(LCase([name]) LIKE "*делл*", 1, 0) +
+       IIF(LCase([name]) LIKE "*a10*", 1, 0) DESC;
+
+----------------------------------------------------------
+	   
+2. Поиск с весовыми коэффициентами
+
+SELECT *,
+       IIF(LCase([name]) LIKE "*notebook*", 1, 0) +
+       IIF(LCase([name]) LIKE "*ноутбук*", 1, 0) +
+       IIF(LCase([name]) LIKE "*dell*", 1.5, 0) +
+       IIF(LCase([name]) LIKE "*делл*", 1.5, 0) +
+       IIF(LCase([name]) LIKE "*a10*", 2, 0) +
+       IIF(LCase([name]) LIKE "*dell*a10*", 2, 0) +
+       IIF(LCase([name]) LIKE "*делл*a10*", 2, 0) AS relevance_score
+FROM products
+WHERE LCase([name]) LIKE "*notebook*" 
+   OR LCase([name]) LIKE "*ноутбук*"
+   OR LCase([name]) LIKE "*dell*"
+   OR LCase([name]) LIKE "*делл*"
+   OR LCase([name]) LIKE "*a10*"
+ORDER BY 
+       IIF(LCase([name]) LIKE "*notebook*", 1, 0) +
+       IIF(LCase([name]) LIKE "*ноутбук*", 1, 0) +
+       IIF(LCase([name]) LIKE "*dell*", 1.5, 0) +
+       IIF(LCase([name]) LIKE "*делл*", 1.5, 0) +
+       IIF(LCase([name]) LIKE "*a10*", 2, 0) +
+       IIF(LCase([name]) LIKE "*dell*a10*", 2, 0) +
+       IIF(LCase([name]) LIKE "*делл*a10*", 2, 0) DESC;
+	 
+----------------------------------------------------------
+	 
+Особенности Access:
+
+LIKE использует * вместо % для любых символов
+LCase() вместо LOWER() для приведения к нижнему регистру
+IIF() вместо CASE WHEN
+Нет поддержки CTE (WITH) и оконных функций
+Сложные вычисления лучше выносить в отдельные запросы
+
+----------------------------------------------------------
+
+SELECT *,
+    IIF(LCASE([nomenclatureName]) LIKE "%dell%", 1, 0) +
+    IIF(LCASE([nomenclatureName]) LIKE "%ноутбук%", 1, 0) AS match_count
+FROM OrderNomenclature
+WHERE
+    LCASE([nomenclatureName]) LIKE "%dell%"
+    OR
+    LCASE([nomenclatureName]) LIKE "%ноутбук%"
+ORDER BY
+    IIF(LCASE([nomenclatureName]) LIKE "%dell%", 1, 0) +
+    IIF(LCASE([nomenclatureName]) LIKE "%ноутбук%", 1, 0) DESC
