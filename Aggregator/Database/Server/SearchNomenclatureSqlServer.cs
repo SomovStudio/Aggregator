@@ -23,7 +23,10 @@ namespace Aggregator.Database.Server
 	
 	public class SearchNomenclatureSqlServer
 	{
-		List<Price> priceList;
+        public const string MIN_PRICE = "По минимальным ценам";
+        public const string MAX_PRICE = "По максимальным ценам";
+
+        List<Price> priceList;
 		List<Nomenclature> nomenclatureList;
 		
 		SqlConnection sqlConnection;
@@ -181,7 +184,7 @@ namespace Aggregator.Database.Server
 		}
 		
 		/* AUTOMATION ======================================================================= */
-		public void autoFindNomenclature(ListView sourceListView, NotificationSearchNomenclature notification)
+		public void autoFindNomenclature(ListView sourceListView, string filterPrice, NotificationSearchNomenclature notification)
 		{
 			String criteriasSearch;
 			String nomenclatureID;
@@ -189,44 +192,60 @@ namespace Aggregator.Database.Server
 			bool result = false;
 			DateTime dt;
 			String value;
-			
-			for(int i = 0; i < count; i++) {
+            Double lastPrice = 0;
+
+            for (int i = 0; i < count; i++) {
 				// получаем сформированный запрос по критериям выбранной номенклатуры
 				nomenclatureID = sourceListView.Items[i].SubItems[1].Text;
 				criteriasSearch = getAutoCriteriasSearch(nomenclatureID);
-				
-				// обработка прайс листов по выбранной номенклатуре
-				foreach(Price price in priceList){
+
+                lastPrice = 0;
+
+                // обработка прайс листов по выбранной номенклатуре
+                foreach (Price price in priceList){
 					sqlConnection.Open();
 					sqlCommand = new SqlCommand("SELECT * FROM " + price.priceName + " " + criteriasSearch, sqlConnection);
 					sqlDataReader = sqlCommand.ExecuteReader();
-					result = sqlDataReader.Read();
-			        
-					if(result){
-						sourceListView.Items[i].StateImageIndex = 1;
-						sourceListView.Items[i].SubItems[6].Text = sqlDataReader["name"].ToString();
-			        	value = Conversion.StringToMoney(Conversion.StringToDouble(sqlDataReader["price"].ToString()).ToString());
-			        	sourceListView.Items[i].SubItems[7].Text = value;
-			        	sourceListView.Items[i].SubItems[8].Text = sqlDataReader["manufacturer"].ToString();
-			        	sourceListView.Items[i].SubItems[9].Text = sqlDataReader["remainder"].ToString();
-			        	dt = new DateTime();
-						DateTime.TryParse(sqlDataReader["term"].ToString(), out dt);
-						sourceListView.Items[i].SubItems[10].Text = dt.ToString("dd.MM.yyyy");
-			        	value = Conversion.StringToMoney(Conversion.StringToDouble(sqlDataReader["discount1"].ToString()).ToString());
-			        	sourceListView.Items[i].SubItems[11].Text = value;
-			        	value = Conversion.StringToMoney(Conversion.StringToDouble(sqlDataReader["discount2"].ToString()).ToString());
-			        	sourceListView.Items[i].SubItems[12].Text = value;
-			        	value = Conversion.StringToMoney(Conversion.StringToDouble(sqlDataReader["discount3"].ToString()).ToString());
-			        	sourceListView.Items[i].SubItems[13].Text = value;
-			        	value = Conversion.StringToMoney(Conversion.StringToDouble(sqlDataReader["discount4"].ToString()).ToString());
-			        	sourceListView.Items[i].SubItems[14].Text = value;
-			        	sourceListView.Items[i].SubItems[15].Text = sqlDataReader["code"].ToString();
-			        	sourceListView.Items[i].SubItems[16].Text = sqlDataReader["series"].ToString();
-			        	sourceListView.Items[i].SubItems[17].Text = sqlDataReader["article"].ToString();
-			        	sourceListView.Items[i].SubItems[18].Text = price.counteragentName;
-			        	sourceListView.Items[i].SubItems[19].Text = price.priceName;
-			        	sourceListView.Items[i].SubItems[20].Text = "";
-					}
+
+                    while (sqlDataReader.Read())
+					{
+                        if (filterPrice == MIN_PRICE && lastPrice > 0 && lastPrice < Conversion.StringToDouble(sqlDataReader["price"].ToString()))
+                        {
+                            continue;
+                        }
+                        else if (filterPrice == MAX_PRICE && lastPrice > 0 && lastPrice > Conversion.StringToDouble(sqlDataReader["price"].ToString()))
+                        {
+                            continue;
+                        }
+						else
+						{
+                            sourceListView.Items[i].StateImageIndex = 1;
+                            sourceListView.Items[i].SubItems[6].Text = sqlDataReader["name"].ToString();
+                            value = Conversion.StringToMoney(Conversion.StringToDouble(sqlDataReader["price"].ToString()).ToString());
+                            sourceListView.Items[i].SubItems[7].Text = value;
+                            sourceListView.Items[i].SubItems[8].Text = sqlDataReader["manufacturer"].ToString();
+                            sourceListView.Items[i].SubItems[9].Text = sqlDataReader["remainder"].ToString();
+                            dt = new DateTime();
+                            DateTime.TryParse(sqlDataReader["term"].ToString(), out dt);
+                            sourceListView.Items[i].SubItems[10].Text = dt.ToString("dd.MM.yyyy");
+                            value = Conversion.StringToMoney(Conversion.StringToDouble(sqlDataReader["discount1"].ToString()).ToString());
+                            sourceListView.Items[i].SubItems[11].Text = value;
+                            value = Conversion.StringToMoney(Conversion.StringToDouble(sqlDataReader["discount2"].ToString()).ToString());
+                            sourceListView.Items[i].SubItems[12].Text = value;
+                            value = Conversion.StringToMoney(Conversion.StringToDouble(sqlDataReader["discount3"].ToString()).ToString());
+                            sourceListView.Items[i].SubItems[13].Text = value;
+                            value = Conversion.StringToMoney(Conversion.StringToDouble(sqlDataReader["discount4"].ToString()).ToString());
+                            sourceListView.Items[i].SubItems[14].Text = value;
+                            sourceListView.Items[i].SubItems[15].Text = sqlDataReader["code"].ToString();
+                            sourceListView.Items[i].SubItems[16].Text = sqlDataReader["series"].ToString();
+                            sourceListView.Items[i].SubItems[17].Text = sqlDataReader["article"].ToString();
+                            sourceListView.Items[i].SubItems[18].Text = price.counteragentName;
+                            sourceListView.Items[i].SubItems[19].Text = price.priceName;
+                            sourceListView.Items[i].SubItems[20].Text = "";
+                            lastPrice = Conversion.StringToDouble(sqlDataReader["price"].ToString());
+                        }
+                    }
+
 			        sqlDataReader.Close();
 			        sqlConnection.Close();
 				}

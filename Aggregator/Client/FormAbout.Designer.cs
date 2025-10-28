@@ -111,7 +111,7 @@ namespace Aggregator.Client
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(260, 19);
             this.label6.TabIndex = 6;
-            this.label6.Text = "Версия: 1.0.0.1";
+            this.label6.Text = "Версия: 1.0.0.2";
             // 
             // label7
             // 

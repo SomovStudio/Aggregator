@@ -51,7 +51,7 @@ namespace Aggregator.Utilits
 				// MSSQL SERVER
 				searchNomenclatureSql = new SearchNomenclatureSqlServer();
 				searchNomenclatureSql.setPrices(ListViewPrices);
-				searchNomenclatureSql.autoFindNomenclature(ListViewNomenclature, this);
+				searchNomenclatureSql.autoFindNomenclature(ListViewNomenclature, FilterPrice, this);
 			}
 		}
 		

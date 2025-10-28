@@ -1215,7 +1215,7 @@ namespace Aggregator.Client.Documents.PurchasePlan
 				}
 							
 				if(nomenclatureList == null) return;
-				if(nomenclatureList.Count == 0) MessageBox.Show("Программе не удалось найти выбанную номенклатуру в прайсах контрагентов.", "Сообщение");
+				if(nomenclatureList.Count == 0) MessageBox.Show("Программе не удалось найти выбранную номенклатуру в прайсах контрагентов.", "Сообщение");
 				FormPurchasePlanNomenclature FPurchasePlanNomenclature = new FormPurchasePlanNomenclature();
 				FPurchasePlanNomenclature.MdiParent = DataForms.FClient;
 				FPurchasePlanNomenclature.ListViewPrices = listViewPrices;

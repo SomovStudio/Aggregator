@@ -57,26 +57,27 @@ namespace Aggregator.Database.Local
 		public List<Nomenclature> getFindNomenclature(String nomenclatureID)
 		{
 			nomenclatureList = new List<Nomenclature>();
-			
-			String criteriasSearch = getCriteriasSearch(nomenclatureID);
-			
-			oleDbConnection.Open();
-			foreach(Price price in priceList){
-				oleDbCommand = new OleDbCommand("SELECT * FROM " + price.priceName + " " + criteriasSearch, oleDbConnection);
 
-				oleDbDataReader = oleDbCommand.ExecuteReader();
+			String query = "";
+
+			foreach(Price price in priceList){
+                query = getQuery(nomenclatureID, price.priceName);
+
+                oleDbConnection.Open();
+                oleDbCommand = new OleDbCommand(query, oleDbConnection);
+                oleDbDataReader = oleDbCommand.ExecuteReader();
 				Nomenclature nomenclature;
 		        while (oleDbDataReader.Read())
 		        {
 		        	nomenclature = new Nomenclature();
 		        	nomenclature.Name = oleDbDataReader["name"].ToString();
 		        	nomenclature.Code = oleDbDataReader["code"].ToString();
-		        	nomenclature.Series = oleDbDataReader["series"].ToString();
-		        	nomenclature.Article = oleDbDataReader["article"].ToString();
+                    nomenclature.Series = oleDbDataReader["series"].ToString();
+                    nomenclature.Article = oleDbDataReader["article"].ToString();
 		        	nomenclature.Manufacturer = oleDbDataReader["manufacturer"].ToString();
 		        	nomenclature.Units = DataConstants.ConstFirmUnits;
-		        	nomenclature.Remainder = (Double)oleDbDataReader["remainder"];
-		        	nomenclature.Price = (Double)oleDbDataReader["price"];
+                    nomenclature.Remainder = (Double)oleDbDataReader["remainder"];
+                    nomenclature.Price = (Double)oleDbDataReader["price"];
 		        	nomenclature.Discount1 = (Double)oleDbDataReader["discount1"];
 		        	nomenclature.Discount2 = (Double)oleDbDataReader["discount2"];
 		        	nomenclature.Discount3 = (Double)oleDbDataReader["discount3"];
@@ -84,17 +85,72 @@ namespace Aggregator.Database.Local
 		        	nomenclature.Term = (DateTime)oleDbDataReader["term"];
 		        	nomenclature.CounteragentName = price.counteragentName;
 		        	nomenclature.CounteragentPrice = price.priceName;
-		        	nomenclatureList.Add(nomenclature);
+					nomenclature.Relevance = oleDbDataReader["relevance"].ToString();
+                    nomenclatureList.Add(nomenclature);
 		        }
 		        oleDbDataReader.Close();
-			}
+                oleDbConnection.Close();
+            }
 
-			oleDbConnection.Close();
-			
-			return nomenclatureList;
+			nomenclatureList.Sort((p1, p2) => p2.Relevance.CompareTo(p1.Relevance));
+
+            return nomenclatureList;
 		}
-		
-		String getCriteriasSearch(String nomenclatureID)
+
+		String getQuery(String nomenclatureID, String pricename)
+		{
+			/* Входные данные */
+			oleDbConnection.Open();
+			Nomenclature templeteNomenclature;
+			oleDbCommand = new OleDbCommand("SELECT * FROM Nomenclature WHERE (id = " + nomenclatureID + ")", oleDbConnection);
+			oleDbDataReader = oleDbCommand.ExecuteReader();
+			oleDbDataReader.Read();
+			templeteNomenclature.Name = oleDbDataReader["name"].ToString();
+			templeteNomenclature.Code = oleDbDataReader["code"].ToString();
+			templeteNomenclature.Series = oleDbDataReader["series"].ToString();
+			templeteNomenclature.Article = oleDbDataReader["article"].ToString();
+			templeteNomenclature.Manufacturer = oleDbDataReader["manufacturer"].ToString();
+			templeteNomenclature.Price = (Double)oleDbDataReader["price"];
+			templeteNomenclature.Units = oleDbDataReader["units"].ToString();
+			oleDbDataReader.Close();
+			oleDbConnection.Close();
+
+			// По Наименованию
+			int count = 0;
+			string str = "SELECT *," + Environment.NewLine;
+
+            String[] words = templeteNomenclature.Name.Split();
+			count = words.Length;
+			if (count > 0)
+			{
+                for (int i = 0; i < count; i++)
+				{
+                    if (words[i].ToString() == "" || words[i].ToString() == " ") continue;
+                    str += "IIF(LCASE([name]) LIKE '%" + words[i].ToLower() + "%', 1, 0)";
+					if ((i+1) < count) str += " +" + Environment.NewLine;
+                }
+                str += " AS relevance" + Environment.NewLine;
+                str += "FROM " + pricename + Environment.NewLine;
+                str += "WHERE" + Environment.NewLine;
+                for (int j = 0; j < count; j++)
+                {
+                    if (words[j].ToString() == "" || words[j].ToString() == " ") continue;
+					str += "LCASE([name]) LIKE '%" + words[j].ToLower() + "%'";
+                    if ((j + 1) < count) str += " OR" + Environment.NewLine;
+                }
+                str += "ORDER BY" + Environment.NewLine;
+                for (int k = 0; k < count; k++)
+				{
+                    if (words[k].ToString() == "" || words[k].ToString() == " ") continue;
+                    str += "IIF(LCASE([name]) LIKE '%" + words[k].ToLower() + "%', 1, 0)";
+                    if ((k + 1) < count) str += " +" + Environment.NewLine;
+                }
+                str += " DESC";
+            }
+            return str;
+        }
+
+        String getCriteriasSearch(String nomenclatureID)
 		{
 			/* Входные данные */
 			oleDbConnection.Open();
@@ -136,7 +192,7 @@ namespace Aggregator.Database.Local
 						else str += "name LIKE '%" + words[j] + "%'";
 					}
 					str += ")";
-				}
+                }
 			}
 			
 			str = str.Replace(".", "").Replace(",", "");
@@ -222,7 +278,6 @@ namespace Aggregator.Database.Local
                         }
 						else
 						{
-                            Utilits.Console.Log("+ Наименование: " + oleDbDataReader["name"].ToString() + " | Цена: " + oleDbDataReader["price"].ToString());
                             sourceListView.Items[i].StateImageIndex = 1;
                             sourceListView.Items[i].SubItems[6].Text = oleDbDataReader["name"].ToString();
                             value = Conversion.StringToMoney(Conversion.StringToDouble(oleDbDataReader["price"].ToString()).ToString());
@@ -250,34 +305,6 @@ namespace Aggregator.Database.Local
                         }
                     }
 					
-					/*
-                    result = oleDbDataReader.Read();
-					if(result){
-						sourceListView.Items[i].StateImageIndex = 1;
-						sourceListView.Items[i].SubItems[6].Text = oleDbDataReader["name"].ToString();
-						value = Conversion.StringToMoney(Conversion.StringToDouble(oleDbDataReader["price"].ToString()).ToString());
-			        	sourceListView.Items[i].SubItems[7].Text = value;
-			        	sourceListView.Items[i].SubItems[8].Text = oleDbDataReader["manufacturer"].ToString();
-			        	sourceListView.Items[i].SubItems[9].Text = oleDbDataReader["remainder"].ToString();
-			        	dt = new DateTime();
-						DateTime.TryParse(oleDbDataReader["term"].ToString(), out dt);
-						sourceListView.Items[i].SubItems[10].Text = dt.ToString("dd.MM.yyyy");
-						value = Conversion.StringToMoney(Conversion.StringToDouble(oleDbDataReader["discount1"].ToString()).ToString());
-			        	sourceListView.Items[i].SubItems[11].Text = value;
-			        	value = Conversion.StringToMoney(Conversion.StringToDouble(oleDbDataReader["discount2"].ToString()).ToString());
-			        	sourceListView.Items[i].SubItems[12].Text = value;
-			        	value = Conversion.StringToMoney(Conversion.StringToDouble(oleDbDataReader["discount3"].ToString()).ToString());
-			        	sourceListView.Items[i].SubItems[13].Text = value;
-			        	value = Conversion.StringToMoney(Conversion.StringToDouble(oleDbDataReader["discount4"].ToString()).ToString());
-			        	sourceListView.Items[i].SubItems[14].Text = value;
-			        	sourceListView.Items[i].SubItems[15].Text = oleDbDataReader["code"].ToString();
-			        	sourceListView.Items[i].SubItems[16].Text = oleDbDataReader["series"].ToString();
-			        	sourceListView.Items[i].SubItems[17].Text = oleDbDataReader["article"].ToString();
-			        	sourceListView.Items[i].SubItems[18].Text = price.counteragentName;
-			        	sourceListView.Items[i].SubItems[19].Text = price.priceName;
-			        	sourceListView.Items[i].SubItems[20].Text = "";
-					}
-					*/
 			        oleDbDataReader.Close();
 			        oleDbConnection.Close();
 				}
